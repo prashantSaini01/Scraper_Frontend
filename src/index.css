@@ -16,3 +16,47 @@ h1, h2, h3, h4, h5, h6 {
 a {
   text-decoration: none;
 }
+/* General styles for accessibility */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F9FAFB; /* Light gray background */
+  color: #1F2937; /* Dark gray text */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Merriweather', serif; /* Serif font for headings */
+}
+
+/* Flexbox utilities */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+/* Form input styles */
+input {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Button styles */
+button {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus styles for accessibility */
+:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.6); /* Blue focus ring */
+}
+
+/* Gradient background for signup page */
+.bg-gradient-to-br {
+  background: linear-gradient(to bottom right, #ebf8ff, #f0fff4);
+}

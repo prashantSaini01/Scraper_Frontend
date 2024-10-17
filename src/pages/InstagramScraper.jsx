@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import API_URL from './config'
+import API_URL from './config';
 
 const InstagramScraper = () => {
   const [email, setEmail] = useState('');
@@ -54,7 +54,7 @@ const InstagramScraper = () => {
     return (
       <div className="space-y-4">
         {data.map((post, index) => (
-          <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <div key={index} className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
             <p>
               <strong>Username:</strong> {post.Username || 'N/A'}
             </p>
@@ -67,6 +67,7 @@ const InstagramScraper = () => {
                 href={post['Image URL']}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
               >
                 View Image
               </a>
@@ -77,6 +78,7 @@ const InstagramScraper = () => {
                 href={post['Post URL']}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="text-blue-500 hover:underline"
               >
                 {post['Post URL']}
               </a>
@@ -88,44 +90,48 @@ const InstagramScraper = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light flex flex-col items-center justify-center">
-      <h2 className="text-4xl text-center text-blue-950 font-bold mb-8">
-        Instagram Scraper
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 flex flex-col items-center justify-center py-10">
+      <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-10">
+        <span className="text-pink-600">Instagram</span> Scraper
       </h2>
 
-      <div className="w-full max-w-lg space-y-4">
+      <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-lg space-y-6 border border-gray-200">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter your Instagram email"
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          aria-label="Instagram email"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your Instagram password"
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          aria-label="Instagram password"
         />
         <input
           type="text"
           value={hashtag}
           onChange={(e) => setHashtag(e.target.value)}
           placeholder="Enter the hashtag (without #)"
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          aria-label="Hashtag"
         />
         <input
           type="number"
           value={postCount}
           onChange={(e) => setPostCount(e.target.value)}
           placeholder="Number of posts to scrape"
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
           required
+          aria-label="Number of posts to scrape"
         />
         <button
           onClick={handleScrape}
-          className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300"
+          className="w-full py-3 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
           disabled={loading}
         >
           {loading ? 'Scraping...' : 'Scrape Instagram'}
@@ -139,13 +145,13 @@ const InstagramScraper = () => {
       )}
 
       {error && (
-        <div className="w-full max-w-lg mt-10 p-4 bg-red-100 text-red-700 border-2 border-red-400 rounded-lg">
+        <div className="w-full max-w-lg mt-10 p-4 bg-red-100 text-red-700 border border-red-400 rounded-lg">
           <h3 className="text-xl font-semibold mb-2">Error:</h3>
           <p>{error}</p>
         </div>
       )}
 
-      <div className="w-full max-w-lg mt-10 p-4 bg-white border-2 border-gray-200 rounded-lg shadow-inner">
+      <div className="w-full max-w-lg mt-10 p-4 bg-white border border-gray-200 rounded-lg shadow-inner">
         <h3 className="text-xl font-semibold mb-2">Output:</h3>
         <div className="text-gray-700">
           {loading

@@ -78,7 +78,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Client, Account } from "appwrite";
-import API_URL from './config'
+import API_URL from './config';
 
 const client = new Client();
 
@@ -104,12 +104,9 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${API_URL}/login`,
-        formData
-      ); // Adjust the backend URL
-      localStorage.setItem("token", response.data.token); // Save the token
-      navigate("/home"); // Redirect after login
+      const response = await axios.post(`${API_URL}/login`, formData);
+      localStorage.setItem("token", response.data.token);
+      navigate("/home");
     } catch (error) {
       console.error("Login failed", error);
       setErrorMessage("Invalid credentials. Please try again.");
@@ -120,63 +117,78 @@ const Login = () => {
   const handleGoogleLogin = () => {
     account.createOAuth2Session(
       "google",
-      "http://localhost:3000/home", // Redirect URL after successful login
-      "http://localhost:3000/login" // Fallback URL in case of failure
+      "http://localhost:3000/home",
+      "http://localhost:3000/login"
     );
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-        <h1 className="text-center text-2xl font-bold">Welcome User!</h1>
-        <br></br>
-
-        <p className="text-center">Please enter your credentials</p>
-        <br></br>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+        <h1 className="text-center text-3xl font-bold text-gray-800 mb-6">
+          Welcome Back!
+        </h1>
+        <p className="text-center text-gray-500 mb-4">
+          Please enter your credentials to continue
+        </p>
 
         {errorMessage && (
-          <p className="text-red-500 text-center">{errorMessage}</p>
+          <p className="text-red-500 text-center mb-4">{errorMessage}</p>
         )}
 
-        <form onSubmit={handleSubmit} className="mb-4">
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Username"
-            className="mb-4 p-2 w-full border rounded"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Password"
-            className="mb-4 p-2 w-full border rounded"
-            required
-          />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Username"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+              required
+              aria-label="Username"
+            />
+          </div>
+          <div className="relative">
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-400"
+              required
+              aria-label="Password"
+            />
+          </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded w-full"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+            aria-label="Login"
           >
             Login
           </button>
         </form>
 
+        <div className="flex items-center my-4">
+          <hr className="flex-grow border-gray-300" />
+          <span className="mx-2 text-gray-400">OR</span>
+          <hr className="flex-grow border-gray-300" />
+        </div>
+
         {/* Google Login Button */}
         <button
           onClick={handleGoogleLogin}
-          className="bg-red-500 text-white py-2 px-4 rounded w-full mt-2"
+          className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition duration-300"
+          aria-label="Login with Google"
         >
           Login with Google
         </button>
 
-        <div className="mt-4">
-          <p className="text-center text-secondary">
-            Dont have an account?{" "}
-            <a href="/signup" className="text-blue-500 hover:underline">
+        <div className="mt-6">
+          <p className="text-center text-gray-600">
+            Don’t have an account?{" "}
+            <a href="/signup" className="text-blue-600 hover:underline font-medium">
               Sign up for free
             </a>
           </p>
@@ -187,4 +199,3 @@ const Login = () => {
 };
 
 export default Login;
- 

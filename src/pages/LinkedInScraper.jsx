@@ -13,7 +13,7 @@ const LinkedInScraper = () => {
   const [error, setError] = useState(null);
 
   const token = localStorage.getItem('token');
-  
+
   const handleScrape = async () => {
     setLoading(true);
     setOutput('');
@@ -21,11 +21,11 @@ const LinkedInScraper = () => {
 
     try {
       const response = await axios.post(`${API_URL}/scrape_linkedin`, {
-        email, 
-        password, 
-        query
+        email,
+        password,
+        query,
       }, {
-        headers: { 'x-access-token': token }
+        headers: { 'x-access-token': token },
       });
 
       if (response.data) {
@@ -91,46 +91,50 @@ const LinkedInScraper = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light flex flex-col items-center justify-center">
-      <h2 className="text-4xl text-center text-blue-950 font-bold mb-8">LinkedIn Scraper</h2>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-10">
+      <h2 className="text-4xl text-center text-blue-800 font-bold mb-6">LinkedIn Scraper</h2>
 
-      <div className="w-full max-w-lg space-y-4">
+      <div className="w-full max-w-lg space-y-4 p-6 bg-white rounded-lg shadow-lg border border-gray-200">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter LinkedIn email..."
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-lg border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-200"
           required
+          aria-label="LinkedIn email"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter LinkedIn password..."
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-lg border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-200"
           required
+          aria-label="LinkedIn password"
         />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Enter LinkedIn search query..."
-          className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="w-full p-4 text-lg border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 transition duration-200"
           required
+          aria-label="LinkedIn search query"
         />
       </div>
 
       <button
         onClick={handleScrape}
-        className="mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300"
+        className="mt-6 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300 focus:outline-none"
+        aria-label="Scrape LinkedIn"
       >
-        Scrape LinkedIn
+        {loading ? 'Scraping...' : 'Scrape LinkedIn'}
       </button>
 
       {loading && (
         <div className="flex justify-center items-center mt-10">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin" role="status" aria-label="Loading spinner"></div>
         </div>
       )}
 
