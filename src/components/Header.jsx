@@ -62,22 +62,13 @@ const Header = () => {
   return (
     <header className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 shadow-lg">
       <nav className="container mx-auto flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-wide hover:underline cursor-pointer">
-          <Link to="/">Scraping Assistant</Link>
-        </h1>
-        <ul className="flex space-x-8">
-          <li>
-            <Link to="/home" className="hover:text-yellow-300 transition duration-300" aria-label="Home">Home</Link>
-          </li>
-          <li>
-            <Link to="/instagram" className="hover:text-yellow-300 transition duration-300" aria-label="Instagram">Instagram</Link>
-          </li>
-          <li>
-            <Link to="/twitter" className="hover:text-yellow-300 transition duration-300" aria-label="Twitter">Twitter</Link>
-          </li>
-          <li>
-            <Link to="/linkedin" className="hover:text-yellow-300 transition duration-300" aria-label="LinkedIn">LinkedIn</Link>
-          </li>
+        <h1 className="text-3xl font-bold tracking-wide">Scraping Assistant</h1>
+        <ul className="flex space-x-6">
+          <li><Link to="/home" className="hover:text-secondary transition-colors duration-300">Home</Link></li>
+          <li><Link to="/instagram" className="hover:text-secondary transition-colors duration-300">Instagram</Link></li>
+          <li><Link to="/twitter" className="hover:text-secondary transition-colors duration-300">Twitter</Link></li>
+          <li><Link to="/linkedin" className="hover:text-secondary transition-colors duration-300">LinkedIn</Link></li>
+          <li><Link to="/youtube" className="hover:text-secondary transition-colors duration-300">Youtube</Link></li>
         </ul>
         <div className="flex space-x-4">
           {!token ? (

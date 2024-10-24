@@ -74,6 +74,9 @@ const Home = () => {
         >
           LinkedIn Scraper
         </Link>
+        <Link to="/youtube" className="bg-gradient-to-r from-red-800 to-red-400 text-white py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">
+          Youtube Scraper
+        </Link>
       </div>
     </div>
   );
