@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+
+// Basic Login Logic
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import API_URL from './config';
@@ -101,7 +104,7 @@ export default Login;
 
 
 // // Appwrite login page 
-// /* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
