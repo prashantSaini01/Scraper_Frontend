@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import API_URL from './config';
 import { useNavigate } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 
 const Login = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -21,23 +22,40 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/login`, formData); // Adjust the backend URL
-            localStorage.setItem('token', response.data.token); // Save the token
-            navigate('/home'); // Redirect after login
+            const response = await axios.post(`${API_URL}/login`, formData);
+            localStorage.setItem('token', response.data.token);
+            navigate('/home');
         } catch (error) {
             console.error('Login failed', error);
             setErrorMessage('Invalid credentials. Please try again.');
         }
     };
 
+    const onGoogleSuccess = async (response) => {
+        const { tokenId } = response; // Get the tokenId
+        try {
+            const res = await axios.post(`${API_URL}/google/authorized`, { id_token: tokenId });
+            localStorage.setItem('token', res.data.token); // Save the token
+            navigate('/home');
+        } catch (error) {
+            console.error('Google login failed', error);
+            setErrorMessage('Google login failed. Please try again.');
+        }
+    };
+
+    const onGoogleFailure = (response) => {
+        console.error('Google login failed', response);
+        setErrorMessage('Google login failed. Please try again.');
+    };
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
                 <h1 className='text-center text-2xl font-bold'>Welcome User!</h1>
-                <br></br>
+                <br />
 
                 <p className="text-center">Please enter your credentials</p>
-                <br></br>
+                <br />
 
                 {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
 
@@ -63,6 +81,14 @@ const Login = () => {
                     <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">Login</button>
                 </form>
 
+                <GoogleLogin
+                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID} // Set your Google Client ID here
+                    buttonText="Login with Google"
+                    onSuccess={onGoogleSuccess}
+                    onFailure={onGoogleFailure}
+                    cookiePolicy={'single_host_origin'}
+                />
+
                 <div className='mt-4'>
                     <p className='text-center text-secondary'>Dont have an account? <a href="/signup" className='text-blue-500 hover:underline'>Sign up for free</a></p>
                 </div>
@@ -72,6 +98,7 @@ const Login = () => {
 };
 
 export default Login;
+
 
 // // Appwrite login page 
 // /* eslint-disable no-unused-vars */
