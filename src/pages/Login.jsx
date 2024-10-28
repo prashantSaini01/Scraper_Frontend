@@ -1,12 +1,9 @@
 /* eslint-disable no-unused-vars */
-
-// Basic Login Logic
-
 import React, { useState } from 'react';
 import axios from 'axios';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import API_URL from './config';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
 
 const Login = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -25,7 +22,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post(`${API_URL}/login`, formData);
+            const response = await axios.post(`${API_URL}/login`, formData); 
             localStorage.setItem('token', response.data.token);
             navigate('/home');
         } catch (error) {
@@ -34,11 +31,13 @@ const Login = () => {
         }
     };
 
-    const onGoogleSuccess = async (response) => {
-        const { tokenId } = response; // Get the tokenId
+    const handleGoogleSuccess = async (response) => {
+        console.log("Google Response:", response);
         try {
-            const res = await axios.post(`${API_URL}/google/authorized`, { id_token: tokenId });
-            localStorage.setItem('token', res.data.token); // Save the token
+            const googleResponse = await axios.post(`${API_URL}/google-login`, {
+                token: response.credential,
+            });
+            localStorage.setItem('token', googleResponse.data.token);
             navigate('/home');
         } catch (error) {
             console.error('Google login failed', error);
@@ -46,65 +45,58 @@ const Login = () => {
         }
     };
 
-    const onGoogleFailure = (response) => {
-        console.error('Google login failed', response);
-        setErrorMessage('Google login failed. Please try again.');
-    };
-
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
-                <h1 className='text-center text-2xl font-bold'>Welcome User!</h1>
-                <br />
+        <GoogleOAuthProvider clientId="570552122475-ipsisoi66av3nlp0m3i6sp4e1tdq56i6.apps.googleusercontent.com">
+            <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+                    <h1 className='text-center text-2xl font-bold'>Welcome User!</h1>
+                    <p className="text-center">Please enter your credentials</p>
+                    {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
 
-                <p className="text-center">Please enter your credentials</p>
-                <br />
+                    <form onSubmit={handleSubmit} className="mb-4">
+                        <input
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            placeholder="Username"
+                            className="mb-4 p-2 w-full border rounded"
+                            required
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Password"
+                            className="mb-4 p-2 w-full border rounded"
+                            required
+                        />
+                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">Login</button>
+                    </form>
 
-                {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+                    <div className="text-center mb-4">
+                        <GoogleLogin 
+                            onSuccess={handleGoogleSuccess} 
+                            onError={() => setErrorMessage('Google login failed. Please try again.')} 
+                        />
+                    </div>
 
-                <form onSubmit={handleSubmit} className="mb-4">
-                    <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        placeholder="Username"
-                        className="mb-4 p-2 w-full border rounded"
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        className="mb-4 p-2 w-full border rounded"
-                        required
-                    />
-                    <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">Login</button>
-                </form>
-
-                <GoogleLogin
-                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID} // Set your Google Client ID here
-                    buttonText="Login with Google"
-                    onSuccess={onGoogleSuccess}
-                    onFailure={onGoogleFailure}
-                    cookiePolicy={'single_host_origin'}
-                />
-
-                <div className='mt-4'>
-                    <p className='text-center text-secondary'>Dont have an account? <a href="/signup" className='text-blue-500 hover:underline'>Sign up for free</a></p>
+                    <p className='text-center text-secondary'>Don't have an account? <a href="/signup" className='text-blue-500 hover:underline'>Sign up for free</a></p>
                 </div>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     );
 };
 
 export default Login;
 
 
+
+
+
 // // Appwrite login page 
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { useNavigate } from "react-router-dom";
