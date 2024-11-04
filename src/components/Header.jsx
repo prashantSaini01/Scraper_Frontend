@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Client, Account } from 'appwrite';
+import { useState, useEffect } from 'react';
+
 
 const client = new Client();
 client.setEndpoint("https://cloud.appwrite.io/v1").setProject("670cc30e0000d61b0682");
