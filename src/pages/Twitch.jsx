@@ -31,7 +31,7 @@ const TwitchVideos = () => {
       }
 
       const data = await response.json();
-      setVideos(data);
+      setVideos(data.response);
     } catch (error) {
       setError(error.message);
     } finally {

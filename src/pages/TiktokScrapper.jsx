@@ -23,7 +23,7 @@ const TikTokScraper = () => {
         { hashtag, post_count }, // Backend expects post_count
         { headers: { 'Content-Type': 'application/json', 'x-access-token': token } }
       );
-      setPosts(response.data); // Assuming backend returns an array of posts
+      setPosts(response.data.response); // Assuming backend returns an array of posts
     } catch (error) {
       console.error('Error scraping TikTok:', error);
       alert('Failed to fetch TikTok posts. Please try again.');

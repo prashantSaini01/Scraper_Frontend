@@ -28,8 +28,8 @@ const YoutubeScraper = () => {
         }
       );
 
-      if (response.data) {
-        setOutput(response.data);
+      if (response.data.response) {
+        setOutput(response.data.response);
       } else {
         setOutput([]);
         setError('No valid data found.');

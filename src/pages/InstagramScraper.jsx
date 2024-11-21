@@ -33,7 +33,7 @@ const InstagramScraper = () => {
         { hashtag },
         { headers: { 'Content-Type': 'application/json', 'x-access-token': token } }
       );
-      setPosts(response.data);
+      setPosts(response.data.response);
     } catch (error) {
       console.error("Error scraping data", error.response ? error.response.data : error.message);
       alert("Error: " + (error.response?.data?.error || "Scraping failed!"));
