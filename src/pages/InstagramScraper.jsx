@@ -44,7 +44,7 @@ const InstagramScraper = () => {
           },
         }
       );
-      setPosts(response.data);
+      setPosts(response.data.response);
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setError("Session expired. Please log in again.");
