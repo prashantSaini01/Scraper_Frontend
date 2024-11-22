@@ -1,7 +1,11 @@
+
 import React, { useState } from 'react';
 import API_URL from './config'; 
+import { FaVideo, FaUserAlt, FaCalendar, FaLink, FaImage } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const TwitchVideos = () => {
+  const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -31,9 +35,20 @@ const TwitchVideos = () => {
       }
 
       const data = await response.json();
-      setVideos(data);
+      setVideos(data.response);
     } catch (error) {
-      setError(error.message);
+      if (error.response && error.response.status === 401) {
+        setError("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        
+        // Show alert and add delay before redirecting
+        window.alert("Session expired. Please log in again."); // Show alert
+        setTimeout(() => {
+          navigate("/login"); // Redirect after delay
+        }, 2000); // 2-second delay
+      }else {
+        setError("An error occurred while scraping Twitch.");
+      }
     } finally {
       setLoading(false);
     }
@@ -45,36 +60,32 @@ const TwitchVideos = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-8">
       <h2 className="text-4xl text-center text-blue-950 font-bold mb-8">Twitch Scraper</h2>
 
       <div className="w-full max-w-lg space-y-4">
         <form onSubmit={handleSubmit}>
-          <div className="mb-1">
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Enter keyword"
-              className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mb-4"
-              required
-            />
-          </div>
-          <div className="mb-1">
-            <input
-              type="number"
-              value={numVideos}
-              onChange={(e) => setNumVideos(e.target.value)}
-              placeholder="Number of videos to scrape"
-              className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-              min="1"
-              max="50"
-              required
-            />
-          </div>
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="Enter keyword"
+            className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mb-4"
+            required
+          />
+          <input
+            type="number"
+            value={numVideos}
+            onChange={(e) => setNumVideos(e.target.value)}
+            placeholder="Number of videos to scrape"
+            className="w-full p-4 text-lg border-2 border-blue-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 mb-6"
+            min="1"
+            max="50"
+            required
+          />
           <button
             type="submit"
-            className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300"
+            className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-transform duration-300"
             disabled={loading}
           >
             {loading ? 'Loading...' : 'Search'}
@@ -89,6 +100,31 @@ const TwitchVideos = () => {
         </div>
       )}
 
+      {/* Data Point Icons */}
+      <div className="w-full max-w-lg flex justify-around mt-8 text-2xl text-gray-800">
+        <div className="text-center">
+          <FaImage className="text-blue-600 mb-2" />
+          <p className="text-sm">Thumbnail</p>
+        </div>
+        <div className="text-center">
+          <FaVideo className="text-blue-600 mb-2" />
+          <p className="text-sm">Title</p>
+        </div>
+        <div className="text-center">
+          <FaUserAlt className="text-blue-600 mb-2" />
+          <p className="text-sm">Channel</p>
+        </div>
+        <div className="text-center">
+          <FaCalendar className="text-blue-600 mb-2" />
+          <p className="text-sm">Date Posted</p>
+        </div>
+        <div className="text-center">
+          <FaLink className="text-blue-600 mb-2" />
+          <p className="text-sm">Video URL</p>
+        </div>
+      </div>
+
+      {/* Video Data Table */}
       {videos.length > 0 && (
         <div className="mt-6 overflow-x-auto w-full max-w-4xl">
           <table className="table-auto w-full text-left border-collapse">

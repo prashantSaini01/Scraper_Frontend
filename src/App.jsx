@@ -5,7 +5,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import InstagramScraper from './pages/InstagramScraper';
 import TwitterScraper from './pages/TwitterScraper';
-import LinkedInScraper from './pages/LinkedinScraper';
+import LinkedinScraper from './pages/LinkedinScraper';
 import SignUp from './pages/Signup';
 import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
@@ -29,7 +29,7 @@ function App() {
         <main className="flex-grow container mx-auto p-4">
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
 
@@ -37,7 +37,7 @@ function App() {
             <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
             <Route path="/instagram" element={<PrivateRoute><InstagramScraper /></PrivateRoute>} />
             <Route path="/twitter" element={<PrivateRoute><TwitterScraper /></PrivateRoute>} />
-            <Route path="/linkedin" element={<PrivateRoute><LinkedInScraper /></PrivateRoute>} />
+            <Route path="/linkedin" element={<PrivateRoute><LinkedinScraper /></PrivateRoute>} />
             <Route path="/youtube" element={<PrivateRoute><YoutubeScraper /></PrivateRoute>} />
             <Route path="/twitch" element={<PrivateRoute><TwitchScraper/></PrivateRoute>} />
             <Route path="/tiktok" element={<PrivateRoute><TikTokScraper/></PrivateRoute>} />

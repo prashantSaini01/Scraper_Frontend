@@ -1,8 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios';
 import API_URL from './config'; // Adjust the path if necessary
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage, faVideo, faUser, faCalendar, faAlignLeft, faLink } from '@fortawesome/free-solid-svg-icons';
 
 const YoutubeScraper = () => {
+  const navigate = useNavigate();
   const [hashtag, setHashtag] = useState('');
   const [maxResults, setMaxResults] = useState(5); // Default to 5 results
   const [output, setOutput] = useState([]);
@@ -15,7 +19,7 @@ const YoutubeScraper = () => {
     setLoading(true);
     setOutput([]);
     setError(null);
-
+  
     try {
       const response = await axios.post(
         `${API_URL}/scrape_youtube`,
@@ -24,24 +28,33 @@ const YoutubeScraper = () => {
           max_results: maxResults,
         },
         {
-          headers: { 'x-access-token': token },  // Send token in request headers
+          headers: { 'x-access-token': token }, // Send token in request headers
         }
       );
-
-      if (response.data) {
-        setOutput(response.data);
+  
+      if (response.data.response) {
+        setOutput(response.data.response);
       } else {
         setOutput([]);
         setError('No valid data found.');
       }
     } catch (error) {
-      console.error('Error:', error);
-      setError('An error occurred while scraping YouTube.');
+      if (error.response && error.response.status === 401) {
+        setError("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        
+        // Show alert and add delay before redirecting
+        window.alert("Session expired. Please log in again."); // Show alert
+        setTimeout(() => {
+          navigate("/login"); // Redirect after delay
+        }, 2000); // 2-second delay
+      } else {
+        setError("An error occurred while scraping YouTube.");
+      }
     } finally {
       setLoading(false);
     }
   };
-
   // Function to format output as a table
   const formatOutput = (data) => {
     if (!Array.isArray(data) || data.length === 0) {
@@ -157,35 +170,52 @@ const YoutubeScraper = () => {
         </button>
       </div>
 
+      {/* YouTube Data Icons */}
+      <div className="flex space-x-6 mt-6 mb-6">
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faImage} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Thumbnail</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faVideo} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Video Title</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faUser} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Channel Name</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faCalendar} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Date Posted</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faAlignLeft} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Description</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <FontAwesomeIcon icon={faLink} className="text-3xl text-blue-600" />
+          <span className="mt-2 text-gray-700 text-sm">Video URL</span>
+        </div>
+      </div>
+
       {loading && (
         <div className="flex justify-center items-center mt-10">
           <div className="w-16 h-16 border-4 border-green-500 border-t-transparent border-solid rounded-full animate-spin"></div>
         </div>
       )}
 
-      {error && (
-        <div className="w-full max-w-lg mt-10 p-4 bg-red-100 text-red-700 border-2 border-red-400 rounded-lg">
-          <h3 className="text-xl font-semibold mb-2">Error:</h3>
-          <p>{error}</p>
-        </div>
-      )}
-
-      <div className="w-full max-w-4xl mt-10 p-4 bg-white border-2 border-gray-200 rounded-lg shadow-inner">
-        <h3 className="text-xl font-semibold mb-2">Output:</h3>
-        <div className="text-gray-700">
-          {loading ? 'Loading...' : error ? null : formatOutput(output)}
-        </div>
-
-        {/* Download CSV Button */}
-        {output.length > 0 && (
+      {error && <p className="text-red-600 text-lg">{error}</p>}
+      {output.length > 0 && (
+        <>
+          {formatOutput(output)}
           <button
             onClick={downloadCSV}
-            className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+            className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:shadow-lg"
           >
             Download CSV
           </button>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };
