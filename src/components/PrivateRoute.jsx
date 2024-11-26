@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 const PrivateRoute = ({ children }) => {
   const navigate = useNavigate();
@@ -11,20 +11,20 @@ const PrivateRoute = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         if (token) {
           // Token verification logic (JWT or custom logic)
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
-          throw new Error('No valid authentication found');
+          throw new Error("No valid authentication found");
         }
       } catch (error) {
-        console.error('Authentication check failed:', error);
+        console.error("Authentication check failed:", error);
         setIsAuthenticated(false);
-        toast.error('Please log in to continue');
-        navigate('/login');
+        toast.error("Please log in to continue");
+        navigate("/login");
       } finally {
         setIsLoading(false);
       }
