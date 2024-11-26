@@ -184,8 +184,8 @@ const TwitchVideos = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-8">
-      <h2 className="text-4xl text-center text-blue-950 font-bold mb-8">Twitch Scraper</h2>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-8 px-4">
+      <h1 className="text-4xl font-bold text-blue-950 mb-6">Twitch Scraper</h1>
 
       <div className="w-full max-w-lg space-y-4">
         <form onSubmit={handleSubmit}>

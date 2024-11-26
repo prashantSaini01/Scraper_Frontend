@@ -193,7 +193,7 @@ const TikTokScraper = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-8 px-4">
       <h2 className="text-4xl text-center text-purple-800 font-bold mb-8">
         TikTok Scraper
       </h2>
@@ -222,25 +222,6 @@ const TikTokScraper = () => {
         >
           {loading ? "Scraping..." : "Fetch Posts"}
         </button>
-      </div>
-
-      {/* Improved Icons Section */}
-      <div className="flex justify-center gap-6 mt-8">
-        {[
-          { label: "Author ID", icon: "👤" },
-          { label: "Cover Image", icon: "🖼️" },
-          { label: "Hashtags", icon: "🏷️" },
-          { label: "Title", icon: "📄" },
-          { label: "Video URL", icon: "🎥" },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center w-24 h-24 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-          >
-            <div className="text-3xl mb-1">{item.icon}</div>
-            <div className="text-sm text-center font-medium">{item.label}</div>
-          </div>
-        ))}
       </div>
 
       {loading && (
