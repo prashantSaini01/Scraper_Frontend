@@ -84,12 +84,12 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/"
-              // className={`transition-colors duration-300 ${
-              //   isActive('/')
-              //     ? 'text-red-600 font-semibold'
-              //     : 'hover:text-red-600'
-              // }`}
+              to="/lawbot"
+              className={`transition-colors duration-300 ${
+                isActive('/lawbot')
+                  ? 'text-red-600 font-semibold'
+                  : 'hover:text-red-600'
+              }`}
             >
               Legal Bot
             </Link>
@@ -164,7 +164,7 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  to="/"
+                  to="/socialspark"
                   className={`block transition-colors duration-300 ${
                     isActive('/socialspark') ? 'text-red-600 font-semibold' : 'hover:text-secondary'
                   }`}
@@ -175,9 +175,9 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  to="/"
+                  to="/lawbot"
                   className={`block transition-colors duration-300 ${
-                    isActive('/')
+                    isActive('/lawbot')
                       ? 'text-red-600 font-semibold'
                       : 'hover:text-secondary'
                   }`}

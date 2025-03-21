@@ -83,7 +83,7 @@ const Homepage = () => {
             </p>
           </div>
           <Link
-            to="/legal-bot"
+            to="/lawbot"
             className="bg-gradient-to-r from-green-500 to-teal-600 text-white py-3 px-16 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300"
           >
             Use

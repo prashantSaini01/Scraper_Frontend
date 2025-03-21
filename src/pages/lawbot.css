@@ -1,0 +1,28 @@
+.app {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+   
+  .container {
+    display: flex;
+    gap: 20px;
+  }
+   
+  .sidebar {
+    width: 30%;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+  }
+   
+  .main {
+    width: 70%;
+    padding: 10px;
+  }
+   
+  h1 {
+    margin-bottom: 10px;
+  }
+   
+  h2 {
+    margin-top: 0;
+  }

@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import Homepage from './pages/Homepage';
 import ContentGenerator from './pages/ContentGenerator';
 import Dashboard from './pages/Dashboard';
+import Lawbot from './pages/lawbot';
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="/tiktok" element={<PrivateRoute><TikTokScraper/></PrivateRoute>} />
               <Route path="/socialspark" element={<PrivateRoute><ContentGenerator/></PrivateRoute>} />
               <Route path="/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>} />
+              <Route path="/lawbot" element={<PrivateRoute><Lawbot/></PrivateRoute>} />
 
             </Routes>
           </Suspense>
