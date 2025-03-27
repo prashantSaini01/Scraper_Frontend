@@ -13,6 +13,7 @@
 //   const [chatHistory, setChatHistory] = useState([]);
 //   const [uploadedPdfs, setUploadedPdfs] = useState([]);
 //   const [isLoading, setIsLoading] = useState(false);
+//   const [embedCode, setEmbedCode] = useState(''); // New state for embed code
 
 //   useEffect(() => {
 //     fetchSessions();
@@ -39,6 +40,7 @@
 //       setSessions([...sessions, newSessionId]);
 //       setChatHistory([]);
 //       setUploadedPdfs([]);
+//       setEmbedCode(''); // Reset embed code on new session
 //     } catch (error) {
 //       console.error('Failed to create new session:', error);
 //     } finally {
@@ -54,6 +56,7 @@
 //       setChatHistory(messagesResponse.data);
 //       const pdfsResponse = await axios.get(`/sessions/${sessionId}/pdfs`);
 //       setUploadedPdfs(pdfsResponse.data);
+//       setEmbedCode(''); // Reset embed code when switching sessions
 //     } catch (error) {
 //       console.error('Failed to load session:', error);
 //     } finally {
@@ -69,6 +72,7 @@
 //         setCurrentSession(null);
 //         setChatHistory([]);
 //         setUploadedPdfs([]);
+//         setEmbedCode(''); // Reset embed code on delete
 //         fetchSessions();
 //       } catch (error) {
 //         console.error('Failed to delete session:', error);
@@ -100,6 +104,21 @@
 //         setUploadedPdfs(response.data);
 //       } catch (error) {
 //         console.error('Failed to fetch PDFs:', error);
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     }
+//   };
+
+//   const generateEmbedCode = async () => {
+//     if (currentSession) {
+//       setIsLoading(true);
+//       try {
+//         const response = await axios.get(`/sessions/${currentSession}/embed`);
+//         setEmbedCode(response.data.embed_code);
+//       } catch (error) {
+//         console.error('Failed to generate embed code:', error);
+//         setEmbedCode('Error generating embed code. Please try again.');
 //       } finally {
 //         setIsLoading(false);
 //       }
@@ -187,6 +206,34 @@
 //                       )}
 //                     </div>
 //                   </div>
+
+//                   {/* New Embed Code Section */}
+//                   <div className="mt-6">
+//                     <button
+//                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+//                       onClick={generateEmbedCode}
+//                       disabled={isLoading || uploadedPdfs.length === 0} // Disable if no PDFs uploaded
+//                     >
+//                       <svg className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m-12 5h12m-12 0l4 4m-4-4l4-4" />
+//                       </svg>
+//                       Generate Chatbot Embed Code
+//                     </button>
+//                     {embedCode && (
+//                       <div className="mt-4">
+//                         <h3 className="text-md font-medium text-gray-900 mb-2">Embed Code</h3>
+//                         <textarea
+//                           className="w-full p-3 border border-gray-300 rounded-md text-sm text-gray-700 bg-gray-50 resize-none"
+//                           value={embedCode}
+//                           readOnly
+//                           rows="5"
+//                         />
+//                         <p className="mt-2 text-sm text-gray-500">
+//                           Copy this code and paste it into your website’s HTML to embed the chatbot.
+//                         </p>
+//                       </div>
+//                     )}
+//                   </div>
 //                 </>
 //               )}
 //             </div>
@@ -231,7 +278,6 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SessionSelector from '../components/SessionSelector';
@@ -247,7 +293,7 @@ function Lawbot() {
   const [chatHistory, setChatHistory] = useState([]);
   const [uploadedPdfs, setUploadedPdfs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [embedCode, setEmbedCode] = useState(''); // New state for embed code
+  const [embedCode, setEmbedCode] = useState(''); // Single state for JS embed code
 
   useEffect(() => {
     fetchSessions();
@@ -274,7 +320,7 @@ function Lawbot() {
       setSessions([...sessions, newSessionId]);
       setChatHistory([]);
       setUploadedPdfs([]);
-      setEmbedCode(''); // Reset embed code on new session
+      setEmbedCode('');
     } catch (error) {
       console.error('Failed to create new session:', error);
     } finally {
@@ -290,7 +336,7 @@ function Lawbot() {
       setChatHistory(messagesResponse.data);
       const pdfsResponse = await axios.get(`/sessions/${sessionId}/pdfs`);
       setUploadedPdfs(pdfsResponse.data);
-      setEmbedCode(''); // Reset embed code when switching sessions
+      setEmbedCode('');
     } catch (error) {
       console.error('Failed to load session:', error);
     } finally {
@@ -306,7 +352,7 @@ function Lawbot() {
         setCurrentSession(null);
         setChatHistory([]);
         setUploadedPdfs([]);
-        setEmbedCode(''); // Reset embed code on delete
+        setEmbedCode('');
         fetchSessions();
       } catch (error) {
         console.error('Failed to delete session:', error);
@@ -441,12 +487,14 @@ function Lawbot() {
                     </div>
                   </div>
 
-                  {/* New Embed Code Section */}
+                  {/* Embed Code Section */}
                   <div className="mt-6">
                     <button
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focusîtr
+
+:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
                       onClick={generateEmbedCode}
-                      disabled={isLoading || uploadedPdfs.length === 0} // Disable if no PDFs uploaded
+                      disabled={isLoading || uploadedPdfs.length === 0}
                     >
                       <svg className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m-12 5h12m-12 0l4 4m-4-4l4-4" />
@@ -455,15 +503,15 @@ function Lawbot() {
                     </button>
                     {embedCode && (
                       <div className="mt-4">
-                        <h3 className="text-md font-medium text-gray-900 mb-2">Embed Code</h3>
+                        <h3 className="text-md font-medium text-gray-900 mb-2">JavaScript Embed Code</h3>
                         <textarea
                           className="w-full p-3 border border-gray-300 rounded-md text-sm text-gray-700 bg-gray-50 resize-none"
                           value={embedCode}
                           readOnly
-                          rows="5"
+                          rows="10"
                         />
                         <p className="mt-2 text-sm text-gray-500">
-                          Copy this code and paste it into your website’s HTML to embed the chatbot.
+                          Paste this into your browser’s console to display the chatbot on any website.
                         </p>
                       </div>
                     )}
