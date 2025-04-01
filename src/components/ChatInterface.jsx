@@ -320,6 +320,7 @@ import ReactMarkdown from 'react-markdown';
 function ChatInterface({ sessionId, chatHistory, onNewMessage }) {
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [messages, setMessages] = useState(chatHistory || []);
   const messagesEndRef = useRef(null);
   
   const scrollToBottom = () => {
@@ -327,15 +328,27 @@ function ChatInterface({ sessionId, chatHistory, onNewMessage }) {
   };
   
   useEffect(() => {
+    setMessages(chatHistory || []);
     scrollToBottom();
   }, [chatHistory]);
   
   const handleAsk = async () => {
     if (!question.trim() || isLoading) return;
+
+     // Immediately add user's message to chat
+  const userMessage = {
+    sender: 'user',
+    content: question.trim()
+  };
+  setMessages(prevMessages => [...prevMessages, userMessage]);
+  
     try {
       setIsLoading(true);
-      const response = await axios.post(`/sessions/${sessionId}/ask`, { question });
+      // const response = await axios.post(`/sessions/${sessionId}/ask`, { question });
       setQuestion('');
+      const response = await axios.post(`/sessions/${sessionId}/ask`, { 
+      question: userMessage.content 
+    });
       onNewMessage();
     } catch (error) {
       alert(error.response?.data.error || 'Error processing question');
@@ -368,7 +381,7 @@ function ChatInterface({ sessionId, chatHistory, onNewMessage }) {
         flexDirection: 'column',
         gap: '12px'
       }}>
-        {chatHistory.map((msg, index) => (
+        {messages.map((msg, index) => (
           <div 
             key={index} 
             className={`message ${msg.sender}-message`}
