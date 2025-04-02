@@ -451,7 +451,7 @@ function Lawbot() {
                     Delete
                   </button>
                 )}
-              </div>
+              </div> 
 
               <SessionSelector
                 sessions={sessions}
