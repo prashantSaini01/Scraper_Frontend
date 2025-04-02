@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import API_URL from './config';
+import API_URL from '../components/config';
 import {
   FaHome,
   FaUserPlus,

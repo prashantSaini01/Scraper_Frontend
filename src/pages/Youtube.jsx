@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import API_URL from "./config"; // Adjust the path if necessary
+import API_URL from "../components/config"; // Adjust the path if necessary
 
 const YoutubeScraper = () => {
   const navigate = useNavigate();

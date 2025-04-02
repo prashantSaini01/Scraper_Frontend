@@ -182,7 +182,7 @@
 // export default TwitchVideos;
 
 import React, { useState } from "react";
-import API_URL from "./config";
+import API_URL from "../components/config";
 import { useNavigate } from "react-router-dom";
 
 const TwitchVideos = () => {

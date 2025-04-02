@@ -183,7 +183,7 @@
 
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import API_URL from "./config";
+import API_URL from "../components/config";
 import { useNavigate } from "react-router-dom";
 
 const TikTokScraper = () => {

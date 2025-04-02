@@ -283,7 +283,7 @@ import axios from 'axios';
 import SessionSelector from '../components/SessionSelector';
 import DocumentUploader from '../components/DocumentUpload';
 import ChatInterface from '../components/ChatInterface';
-import API_URL from "./config";
+import API_URL from "../components/config";
 
 axios.defaults.baseURL = API_URL;
 
