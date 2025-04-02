@@ -449,7 +449,8 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/sessions/${currentSession}/embed`);
+        // Pass the session ID to be used for documents only
+        const response = await axios.get(`/sessions/${currentSession}/embed?documentsOnly=true`);
         setEmbedCode(response.data.embed_code);
       } catch (error) {
         console.error('Failed to generate embed code:', error);
