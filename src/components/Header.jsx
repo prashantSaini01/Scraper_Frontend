@@ -84,9 +84,9 @@ const Header = () => {
           </li>
           <li>
             <Link
-              to="/legalbot"
+              to="/lawbot"
               className={`transition-colors duration-300 ${
-                isActive('/legalbot')
+                isActive('/lawbot')
                   ? 'text-red-600 font-semibold'
                   : 'hover:text-red-600'
               }`}
@@ -199,7 +199,7 @@ const Header = () => {
               </li>
               <li>
                 <Link
-                  to="/"
+                  to="/lawbot"
                   className={`block transition-colors duration-300 ${
                     isActive('/lawbot')
                       ? 'text-red-600 font-semibold'
