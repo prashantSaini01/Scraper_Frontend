@@ -24,7 +24,7 @@ function DocumentUploader({ sessionId, onUploadSuccess }) {
     }
     
     try {
-      const response = await axios.post(`/sessions/${sessionId}/upload`, formData, {
+      const response = await axios.post(`docu_chat/sessions/${sessionId}/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);

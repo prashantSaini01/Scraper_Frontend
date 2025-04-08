@@ -6,7 +6,7 @@ export const fetchSessions = createAsyncThunk(
   "lawbot/fetchSessions",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/sessions");
+      const response = await api.get("docu_chat/sessions");
       return response.data;
     } catch (error) {
       console.error("Failed to fetch sessions:", error);
@@ -20,7 +20,7 @@ export const createNewSession = createAsyncThunk(
   "lawbot/createNewSession",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.post("/sessions");
+      const response = await api.post("docu_chat/sessions");
       return response.data.session_id;
     } catch (error) {
       console.error("Failed to create new session:", error);
@@ -34,7 +34,7 @@ export const renameSession = createAsyncThunk(
   "lawbot/renameSession",
   async ({ oldSessionId, newName }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/sessions/${oldSessionId}/rename`, {
+      const response = await api.put(`docu_chat/sessions/${oldSessionId}/rename`, {
         new_name: newName,
       });
       return { oldSessionId, newName };
@@ -50,8 +50,8 @@ export const selectSession = createAsyncThunk(
   "lawbot/selectSession",
   async (sessionId, { rejectWithValue }) => {
     try {
-      const messagesResponse = await api.get(`/sessions/${sessionId}/messages`);
-      const pdfsResponse = await api.get(`/sessions/${sessionId}/pdfs`);
+      const messagesResponse = await api.get(`docu_chat/sessions/${sessionId}/messages`);
+      const pdfsResponse = await api.get(`docu_chat/sessions/${sessionId}/pdfs`);
       return {
         sessionId,
         chatHistory: messagesResponse.data,
@@ -69,7 +69,7 @@ export const deleteSession = createAsyncThunk(
   "lawbot/deleteSession",
   async (sessionId, { rejectWithValue }) => {
     try {
-      await api.delete(`/sessions/${sessionId}`);
+      await api.delete(`docu_chat/sessions/${sessionId}`);
       return sessionId;
     } catch (error) {
       console.error("Failed to delete session:", error);
@@ -83,7 +83,7 @@ export const fetchChatHistory = createAsyncThunk(
   "lawbot/fetchChatHistory",
   async (sessionId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/sessions/${sessionId}/messages`);
+      const response = await api.get(`docu_chat/sessions/${sessionId}/messages`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch chat history:", error);
@@ -97,7 +97,7 @@ export const fetchUploadedPdfs = createAsyncThunk(
   "lawbot/fetchUploadedPdfs",
   async (sessionId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/sessions/${sessionId}/pdfs`);
+      const response = await api.get(`docu_chat/sessions/${sessionId}/pdfs`);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch PDFs:", error);
@@ -111,7 +111,7 @@ export const generateEmbedCode = createAsyncThunk(
   "lawbot/generateEmbedCode",
   async (sessionId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/sessions/${sessionId}/embed?documentsOnly=true`);
+      const response = await api.get(`docu_chat/sessions/${sessionId}/embed?documentsOnly=true`);
       return response.data.embed_code;
     } catch (error) {
       console.error("Failed to generate embed code:", error);

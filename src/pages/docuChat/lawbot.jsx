@@ -25,7 +25,7 @@ function Lawbot() {
   const fetchSessions = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('/sessions');
+      const response = await axios.get('/docu_chat/sessions');
       setSessions(response.data);
     } catch (error) {
       console.error('Failed to fetch sessions:', error);
@@ -37,7 +37,7 @@ function Lawbot() {
   const createNewSession = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('/sessions');
+      const response = await axios.post('docu_chat/sessions');
       const newSessionId = response.data.session_id;
       setCurrentSession(newSessionId);
       setSessions([...sessions, newSessionId]);
@@ -54,7 +54,7 @@ function Lawbot() {
   const renameSession = async (oldSessionId, newName) => {
   setIsLoading(true);
   try {
-    const response = await axios.put(`/sessions/${oldSessionId}/rename`, {
+    const response = await axios.put(`docu_chat/sessions/${oldSessionId}/rename`, {
       new_name: newName
     });
     
@@ -82,9 +82,9 @@ function Lawbot() {
     setIsLoading(true);
     setCurrentSession(sessionId);
     try {
-      const messagesResponse = await axios.get(`/sessions/${sessionId}/messages`);
+      const messagesResponse = await axios.get(`docu_chat/sessions/${sessionId}/messages`);
       setChatHistory(messagesResponse.data);
-      const pdfsResponse = await axios.get(`/sessions/${sessionId}/pdfs`);
+      const pdfsResponse = await axios.get(`/docu_chat/sessions/${sessionId}/pdfs`);
       setUploadedPdfs(pdfsResponse.data);
       setEmbedCode('');
     } catch (error) {
@@ -98,7 +98,7 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        await axios.delete(`/sessions/${currentSession}`);
+        await axios.delete(`docu_chat/sessions/${currentSession}`);
         setCurrentSession(null);
         setChatHistory([]);
         setUploadedPdfs([]);
@@ -116,7 +116,7 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/sessions/${currentSession}/messages`);
+        const response = await axios.get(`docu_chat/sessions/${currentSession}/messages`);
         setChatHistory(response.data);
       } catch (error) {
         console.error('Failed to fetch chat history:', error);
@@ -130,7 +130,7 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`/sessions/${currentSession}/pdfs`);
+        const response = await axios.get(`docu_chat/sessions/${currentSession}/pdfs`);
         setUploadedPdfs(response.data);
       } catch (error) {
         console.error('Failed to fetch PDFs:', error);
@@ -145,7 +145,7 @@ function Lawbot() {
       setIsLoading(true);
       try {
         // Pass the session ID to be used for documents only
-        const response = await axios.get(`/sessions/${currentSession}/embed?documentsOnly=true`);
+        const response = await axios.get(`docu_chat/sessions/${currentSession}/embed?documentsOnly=true`);
         setEmbedCode(response.data.embed_code);
       } catch (error) {
         console.error('Failed to generate embed code:', error);
