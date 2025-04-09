@@ -16,7 +16,6 @@ import LinkedinScraper from "./pages/abrassio/LinkedinScraper";
 import YoutubeScraper from "./pages/abrassio/Youtube";
 import TwitchScraper from "./pages/abrassio/Twitch";
 import TikTokScraper from "./pages/abrassio/TiktokScrapper";
-import ContentGenerator from "./pages/writer/ContentGenerator";
 import Dashboard from "./pages/abrassio/Dashboard";
 import Lawbot from "./pages/docuChat/lawbot";
 import WhyUs from "./pages/writer/WhyContentGenerator";
@@ -37,6 +36,14 @@ function App() {
             </PrivateRoute>
           }
         />
+          <Route
+                      path="/socialspark"
+                      element={
+                        <PrivateRoute>
+                          <WhyUs />
+                        </PrivateRoute>
+                      }
+                    />
 
         {/* All other routes with layout */}
         <Route
@@ -115,22 +122,8 @@ function App() {
                         </PrivateRoute>
                       }
                     />
-                    <Route
-                      path="/socialspark"
-                      element={
-                        <PrivateRoute>
-                          <WhyUs />
-                        </PrivateRoute>
-                      }
-                    />
-                    <Route
-                      path="/try-it"
-                      element={
-                        <PrivateRoute>
-                          <ContentGenerator />
-                        </PrivateRoute>
-                      }
-                    />
+                  
+                  
                     <Route
                       path="/dashboard"
                       element={

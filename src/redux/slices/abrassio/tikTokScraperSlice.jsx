@@ -10,7 +10,7 @@ export const scrapeTikTok = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/scrape_tiktok", {
+      const response = await api.post("/abrassio/scrape_tiktok", {
         hashtag,
         post_count: postCount,
         use_cache: useCache,

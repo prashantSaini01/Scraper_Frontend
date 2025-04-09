@@ -7,7 +7,7 @@ export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/get_users");
+      const response = await api.get("/auth/get_users");
       const sanitizedUsers = (response.data.users || []).map((user) => ({
         _id: user._id || "",
         username: user.username || "Unknown",
@@ -37,7 +37,7 @@ export const addUser = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/add_user", newUser);
+      const response = await api.post("/auth/add_user", newUser);
       toast.success(response.data.message);
       return {
         _id: response.data.user_id,
@@ -58,7 +58,7 @@ export const removeUser = createAsyncThunk(
   "users/removeUser",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.post("/remove_user", { user_id: userId });
+      const response = await api.post("/auth/remove_user", { user_id: userId });
       toast.success(response.data.message);
       return userId;
     } catch (error) {

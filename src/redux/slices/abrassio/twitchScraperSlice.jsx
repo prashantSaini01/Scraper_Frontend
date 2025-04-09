@@ -10,7 +10,7 @@ export const scrapeTwitch = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/scrape_twitch", {
+      const response = await api.post("/abrassio/scrape_twitch", {
         keyword,
         num_videos: parseInt(numVideos, 10),
         use_cache: useCache,

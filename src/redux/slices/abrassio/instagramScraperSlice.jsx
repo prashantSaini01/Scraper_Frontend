@@ -11,7 +11,7 @@ export const scrapeInstagram = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/scrape_instagram", { hashtag, use_cache: useCache });
+      const response = await api.post("/abrassio/scrape_instagram", { hashtag, use_cache: useCache });
       return response.data;
     } catch (error) {
       if (error.response?.status === 401) {

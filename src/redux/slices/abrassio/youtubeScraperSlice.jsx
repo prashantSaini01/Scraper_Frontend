@@ -7,7 +7,7 @@ export const scrapeYoutube = createAsyncThunk(
   "youtubeScraper/scrapeYoutube",
   async ({ hashtag, maxResults, useCache }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/scrape_youtube", {
+      const response = await api.post("/abrassio/scrape_youtube", {
         hashtag,
         max_results: useCache ? null : Number(maxResults),
         use_cache: useCache,

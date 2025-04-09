@@ -10,7 +10,7 @@ export const signup = createAsyncThunk(
     const { email, password, fullname, username } = formData;
 
     try {
-      const response = await axios.post(`${API_URL}/register`, {
+      const response = await axios.post(`${API_URL}/auth/register`, {
         email,
         password,
         fullname,
@@ -43,7 +43,7 @@ export const login = createAsyncThunk(
     }
 
     try {
-      const response = await axios.post(`${API_URL}/login`, formData);
+      const response = await axios.post(`${API_URL}/auth/login`, formData);
       localStorage.setItem("token", response.data.token);
       toast.success("Login successful!");
       return response.data.token;

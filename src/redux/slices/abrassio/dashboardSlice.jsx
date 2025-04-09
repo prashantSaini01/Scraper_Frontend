@@ -8,9 +8,9 @@ export const fetchDashboardData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const [queriesResponse, tagsResponse, usersResponse] = await Promise.all([
-        api.get("/get_queries"),
-        api.get("/get_subscribed_tags"),
-        api.get("/get_users"),
+        api.get("/abrassio_newsletter/get_queries"),
+        api.get("/abrassio_newsletter/get_subscribed_tags"),
+        api.get("/auth/get_users"),
       ]);
       return {
         queries: queriesResponse.data.queries || [],
@@ -31,7 +31,7 @@ export const fetchSentimentData = createAsyncThunk(
   "dashboard/fetchSentimentData",
   async ({ platform, query }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/get_sentiment_data", { platform, query });
+      const response = await api.post("/abrassio_newsletter/get_sentiment_data", { platform, query });
       const sentiment = response.data.sentiment || {};
       return {
         sentimentData: {
@@ -59,7 +59,7 @@ export const unsubscribeTag = createAsyncThunk(
   "dashboard/unsubscribeTag",
   async ({ platform, tag }, { rejectWithValue }) => {
     try {
-      const response = await api.post("/unsubscribe_newsletter", { platform, tag });
+      const response = await api.post("/abrassio_newsletter/unsubscribe_newsletter", { platform, tag });
       toast.success(response.data.message);
       return { platform, tag };
     } catch (error) {
@@ -73,7 +73,7 @@ export const addUser = createAsyncThunk(
   "dashboard/addUser",
   async (newUser, { rejectWithValue }) => {
     try {
-      const response = await api.post("/add_user", newUser);
+      const response = await api.post("/auth/add_user", newUser);
       toast.success(response.data.message);
       return {
         _id: response.data.user_id,
@@ -92,7 +92,7 @@ export const removeUser = createAsyncThunk(
   "dashboard/removeUser",
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await api.post("/remove_user", { user_id: userId });
+      const response = await api.post("/auth/remove_user", { user_id: userId });
       toast.success(response.data.message);
       return userId;
     } catch (error) {
@@ -111,7 +111,7 @@ export const getNewsletter = createAsyncThunk(
       return rejectWithValue("No subscribed tags.");
     }
     try {
-      const response = await api.post("/get_newsletter_now", {});
+      const response = await api.post("/abrassio_newsletter/get_newsletter_now", {});
       toast.success(response.data.message);
       return;
     } catch (error) {

@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import contentReducer from "../slices/content/contentSlice";
 import dashboardReducer from "../slices/abrassio/dashboardSlice";
 import instagramScraperReducer from "../slices/abrassio/instagramScraperSlice";
 import linkedInScraperReducer from "../slices/abrassio/linkedInScraperSlice";
@@ -15,7 +14,6 @@ import authReducer from "../slices/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
-    content: contentReducer,
     dashboard: dashboardReducer,
     instagramScraper: instagramScraperReducer,
     linkedInScraper: linkedInScraperReducer,

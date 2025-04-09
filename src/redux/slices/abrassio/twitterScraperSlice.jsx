@@ -14,7 +14,7 @@ export const scrapeTwitter = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/scrape_twitter", { keyword, use_cache: useCache });
+      const response = await api.post("/abrassio/scrape_twitter", { keyword, use_cache: useCache });
       return response.data;
     } catch (error) {
       if (error.response?.status === 401) {

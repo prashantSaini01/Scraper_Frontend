@@ -10,7 +10,7 @@ export const scrapeLinkedIn = createAsyncThunk(
     }
 
     try {
-      const response = await api.post("/scrape_linkedin", { hashtag, use_cache: useCache });
+      const response = await api.post("/abrassio/scrape_linkedin", { hashtag, use_cache: useCache });
       const posts = response.data || [];
       if (!posts.length) {
         return rejectWithValue("No posts found for the given hashtag.");
