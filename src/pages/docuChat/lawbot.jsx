@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SessionSelector from '../../components/SessionSelector';
 import DocumentUploader from '../../components/DocumentUpload';
-import ChatInterface from '../../components/ChatInterface'
-import API_URL from "../../components/config"
+import ChatInterface from '../../components/ChatInterface';
+import API_URL from "../../components/config";
+import AgentConfigPanel from '../../components/AgentConfigPanel';
 
-
+// Set default headers for all axios requests
 axios.defaults.baseURL = API_URL;
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 function Lawbot() {
   const [sessions, setSessions] = useState([]);
@@ -16,16 +18,39 @@ function Lawbot() {
   const [chatHistory, setChatHistory] = useState([]);
   const [uploadedPdfs, setUploadedPdfs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [embedCode, setEmbedCode] = useState(''); // Single state for JS embed code
+  const [embedCode, setEmbedCode] = useState('');
+  const [documentsProcessed, setDocumentsProcessed] = useState(false);
 
   useEffect(() => {
     fetchSessions();
   }, []);
 
+  useEffect(() => {
+    if (currentSession) {
+      checkDocumentProcessingStatus();
+    }
+  }, [currentSession, uploadedPdfs]);
+
+  const checkDocumentProcessingStatus = async () => {
+    if (!currentSession || uploadedPdfs.length === 0) return;
+    
+    try {
+      const response = await axios.get(`docu_chat/sessions/${currentSession}/processing_status`);
+      setDocumentsProcessed(response.data.processed);
+      
+      // If documents are not processed, poll every 5 seconds
+      if (!response.data.processed) {
+        setTimeout(checkDocumentProcessingStatus, 5000);
+      }
+    } catch (error) {
+      console.error('Failed to check document processing status:', error);
+    }
+  };
+
   const fetchSessions = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('/docu_chat/sessions');
+      const response = await axios.get('docu_chat/sessions');
       setSessions(response.data);
     } catch (error) {
       console.error('Failed to fetch sessions:', error);
@@ -37,13 +62,18 @@ function Lawbot() {
   const createNewSession = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('docu_chat/sessions');
+      const response = await axios.post('docu_chat/sessions', {}, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       const newSessionId = response.data.session_id;
       setCurrentSession(newSessionId);
-      setSessions([...sessions, newSessionId]);
+      setSessions([...sessions, response.data]);
       setChatHistory([]);
       setUploadedPdfs([]);
       setEmbedCode('');
+      setDocumentsProcessed(false);
     } catch (error) {
       console.error('Failed to create new session:', error);
     } finally {
@@ -52,37 +82,43 @@ function Lawbot() {
   };
 
   const renameSession = async (oldSessionId, newName) => {
-  setIsLoading(true);
-  try {
-    const response = await axios.put(`docu_chat/sessions/${oldSessionId}/rename`, {
-      new_name: newName
-    });
-    
-    // Update the sessions list with the new name
-    setSessions(prevSessions => 
-      prevSessions.map(session => 
-        session === oldSessionId ? newName : session
-      )
-    );
-    
-    // Update current session if it was renamed
-    if (currentSession === oldSessionId) {
-      setCurrentSession(newName);
+    setIsLoading(true);
+    try {
+      const response = await axios.put(`/docu_chat/sessions/${oldSessionId}/rename`, {
+        new_name: newName
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // Update the sessions list with the new name
+      setSessions(prevSessions => 
+        prevSessions.map(session => 
+          session.session_id === oldSessionId 
+            ? { ...session, agent_config: { ...session.agent_config, name: newName } }
+            : session
+        )
+      );
+      
+      // Update current session if it was renamed
+      if (currentSession === oldSessionId) {
+        setCurrentSession(oldSessionId);
+      }
+      
+    } catch (error) {
+      console.error('Failed to rename session:', error);
+      alert('Failed to rename session. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    
-  } catch (error) {
-    console.error('Failed to rename session:', error);
-    alert('Failed to rename session. Please try again.');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const selectSession = async (sessionId) => {
     setIsLoading(true);
     setCurrentSession(sessionId);
     try {
-      const messagesResponse = await axios.get(`docu_chat/sessions/${sessionId}/messages`);
+      const messagesResponse = await axios.get(`/docu_chat/sessions/${sessionId}/messages`);
       setChatHistory(messagesResponse.data);
       const pdfsResponse = await axios.get(`/docu_chat/sessions/${sessionId}/pdfs`);
       setUploadedPdfs(pdfsResponse.data);
@@ -98,14 +134,20 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        await axios.delete(`docu_chat/sessions/${currentSession}`);
+        // Fix: Add leading forward slash to the API route
+        await axios.delete(`/docu_chat/sessions/${currentSession}`);
+        setSessions(prevSessions => prevSessions.filter(session => session.session_id !== currentSession));
         setCurrentSession(null);
         setChatHistory([]);
         setUploadedPdfs([]);
         setEmbedCode('');
-        fetchSessions();
+        // Fetch sessions after successful deletion to update the list
+        await fetchSessions();
+        setDocumentsProcessed(false);
       } catch (error) {
         console.error('Failed to delete session:', error);
+        // Add error notification to user
+        alert('Failed to delete session. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -130,13 +172,36 @@ function Lawbot() {
     if (currentSession) {
       setIsLoading(true);
       try {
-        const response = await axios.get(`docu_chat/sessions/${currentSession}/pdfs`);
+        const response = await axios.get(`/docu_chat/sessions/${currentSession}/pdfs`);
         setUploadedPdfs(response.data);
+        
+        // Automatically trigger document processing after upload
+        if (response.data.length > 0) {
+          await processDocuments();
+        }
       } catch (error) {
         console.error('Failed to fetch PDFs:', error);
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const processDocuments = async () => {
+    if (!currentSession || uploadedPdfs.length === 0) return;
+    
+    setIsLoading(true);
+    try {
+      await axios.post(`/docu_chat/sessions/${currentSession}/process_documents`, {
+        documents: uploadedPdfs.map(pdf => pdf.id)
+      });
+      
+      // Start polling for processing status
+      checkDocumentProcessingStatus();
+    } catch (error) {
+      console.error('Failed to process documents:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -215,6 +280,9 @@ function Lawbot() {
               {currentSession && (
                 <>
                   <div className="mt-6">
+                    <AgentConfigPanel sessionId={currentSession} />
+                  </div>
+                  <div className="mt-6">
                     <DocumentUploader 
                       sessionId={currentSession} 
                       onUploadSuccess={fetchUploadedPdfs} 
@@ -281,6 +349,7 @@ function Lawbot() {
                   chatHistory={chatHistory} 
                   onNewMessage={fetchChatHistory} 
                   isLoading={isLoading}
+                  documentsProcessed={documentsProcessed}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-gray-300 rounded-lg p-12">

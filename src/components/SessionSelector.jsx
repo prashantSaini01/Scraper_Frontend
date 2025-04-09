@@ -6,23 +6,34 @@ function SessionSelector({ sessions, currentSession, onSelect, isLoading, onRena
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleEditClick = (session, e) => {
-    e.stopPropagation(); // Prevent dropdown from closing
-    setEditingSession(session);
-    setNewName(session);
+    e.stopPropagation();
+    setEditingSession(session.session_id);
+    setNewName(session.agent_config.name || session.session_id);
   };
 
   const handleSave = async (session, e) => {
-    e.stopPropagation(); // Prevent dropdown from closing
+    e.stopPropagation();
     if (newName.trim()) {
-      await onRename(session, newName.trim());
+      await onRename(session.session_id, newName.trim());
       setEditingSession(null);
       setNewName('');
     }
   };
 
   const handleSessionSelect = (session) => {
-    onSelect(session);
+    onSelect(session.session_id);
     setIsDropdownOpen(false);
+  };
+
+  const getDisplayName = (session) => {
+    if (session?.agent_config?.name) {
+      return session.agent_config.name;
+    }
+    return session?.session_id?.substring(0, 16) + '...';
+  };
+
+  const getCurrentSession = () => {
+    return sessions.find(s => s.session_id === currentSession);
   };
 
   return (
@@ -37,7 +48,7 @@ function SessionSelector({ sessions, currentSession, onSelect, isLoading, onRena
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         >
           <span className="block truncate">
-            {currentSession ? (currentSession.startsWith('202') ? currentSession.substring(0, 16) + '...' : currentSession) : 'Select a session'}
+            {currentSession ? getDisplayName(getCurrentSession()) : 'Select a session'}
           </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
             <svg 
@@ -60,12 +71,12 @@ function SessionSelector({ sessions, currentSession, onSelect, isLoading, onRena
           <div className="absolute mt-1 w-full z-10 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
             {sessions.map((session) => (
               <div
-                key={session}
+                key={session.session_id}
                 className={`relative cursor-pointer select-none hover:bg-gray-50 ${
-                  currentSession === session ? 'bg-indigo-50' : ''
+                  currentSession === session.session_id ? 'bg-indigo-50' : ''
                 }`}
               >
-                {editingSession === session ? (
+                {editingSession === session.session_id ? (
                   <div className="flex items-center px-3 py-2">
                     <input
                       type="text"
@@ -102,7 +113,7 @@ function SessionSelector({ sessions, currentSession, onSelect, isLoading, onRena
                     onClick={() => handleSessionSelect(session)}
                   >
                     <span className="block truncate">
-                      {session.startsWith('202') ? session.substring(0, 16) + '...' : session}
+                      {getDisplayName(session)}
                     </span>
                     <button
                       onClick={(e) => handleEditClick(session, e)}

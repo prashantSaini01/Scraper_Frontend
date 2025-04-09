@@ -7,7 +7,12 @@ export const fetchSessions = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("docu_chat/sessions");
-      return response.data;
+      // Transform the response to extract session_ids
+      return response.data.map(session => ({
+        id: session.session_id,
+        agentConfig: session.agent_config,
+        createdAt: session.created_at
+      }));
     } catch (error) {
       console.error("Failed to fetch sessions:", error);
       return rejectWithValue("Failed to fetch sessions.");
@@ -120,6 +125,33 @@ export const generateEmbedCode = createAsyncThunk(
   }
 );
 
+// Add these new async thunks after the existing ones
+export const updateAgentConfig = createAsyncThunk(
+  "lawbot/updateAgentConfig",
+  async ({ sessionId, config }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`docu_chat/sessions/${sessionId}/config`, config);
+      return response.data.agent_config;
+    } catch (error) {
+      console.error("Failed to update agent config:", error);
+      return rejectWithValue("Failed to update agent configuration.");
+    }
+  }
+);
+
+export const fetchAgentConfig = createAsyncThunk(
+  "lawbot/fetchAgentConfig",
+  async (sessionId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`docu_chat/sessions/${sessionId}/config`);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch agent config:", error);
+      return rejectWithValue("Failed to fetch agent configuration.");
+    }
+  }
+);
+
 // Slice
 const lawbotSlice = createSlice({
   name: "lawbot",
@@ -131,6 +163,12 @@ const lawbotSlice = createSlice({
     embedCode: "",
     isLoading: false,
     error: null,
+    agentConfig: {
+      name: "",
+      role: "",
+      expertise: "",
+      tone: "professional"
+    },
   },
   reducers: {
     clearSession: (state) => {
@@ -263,6 +301,31 @@ const lawbotSlice = createSlice({
       .addCase(generateEmbedCode.rejected, (state, action) => {
         state.isLoading = false;
         state.embedCode = action.payload; // Set error message as embedCode
+      })
+      // Add these new cases
+      .addCase(updateAgentConfig.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateAgentConfig.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.agentConfig = action.payload;
+      })
+      .addCase(updateAgentConfig.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchAgentConfig.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchAgentConfig.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.agentConfig = action.payload;
+      })
+      .addCase(fetchAgentConfig.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });
